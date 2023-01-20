@@ -29,7 +29,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 println!("vec = {:?}", vec);
                 if !vec.is_empty() {
                     match liquidate(client.clone(), signer.clone(), vec[0]).await {
-                        Ok(_) => println!("Borrow {} has been liquidates", vec[0]),
+                        Ok(_) => println!("Borrow {} has been liquidated", vec[0]),
                         _ => println!("Failure during liquidating borrow {}", vec[0]),
                     }
                 }
