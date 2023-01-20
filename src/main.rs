@@ -26,7 +26,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     loop {
         match run(client.clone(), signer.clone()).await {
             Ok(vec) => {
-                println!("vec = {:?}", vec);
+                println!("vec of borrow id to liquidate = {:?}", vec);
                 if !vec.is_empty() {
                     match liquidate(client.clone(), signer.clone(), vec[0]).await {
                         Ok(_) => println!("Borrow {} has been liquidated", vec[0]),
@@ -98,7 +98,7 @@ async fn run(
             },
             Ok(response) => {
                 println!("response gotten after: {}s", delta);
-                println!("response: {:#?}", response.status);
+                // println!("response: {:#?}", response.status);
                 match response.status {
                     FinalExecutionStatus::SuccessValue(value) => {
                         let vec: Vec<u128> = serde_json::from_slice(&value).unwrap();
