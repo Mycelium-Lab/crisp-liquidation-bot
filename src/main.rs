@@ -24,9 +24,16 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let signer_secret_key = SECRET_KEY.parse()?;
     let signer = near_crypto::InMemorySigner::from_secret_key(signer_account_id, signer_secret_key);
     loop {
-        let result = run(client.clone(), signer.clone()).await;
-        match result {
-            Ok(vec) => println!("vec = {:?}", vec),
+        match run(client.clone(), signer.clone()).await {
+            Ok(vec) => {
+                println!("vec = {:?}", vec);
+                if !vec.is_empty() {
+                    match liquidate(client.clone(), signer.clone(), vec[0]).await {
+                        Ok(_) => println!("Borrow {} has been liquidates", vec[0]),
+                        _ => println!("Failure during liquidating borrow {}", vec[0]),
+                    }
+                }
+            }
             _ => continue,
         }
     }
@@ -162,7 +169,7 @@ async fn liquidate(
                 }
                 _ => Err(err)?,
             },
-            Ok(response) => {
+            Ok(_) => {
                 println!("liquidate");
                 println!("response gotten after: {}s", delta);
                 // println!("response: {:#?}", response.status);
